@@ -1,4 +1,5 @@
-import 'package:finance_manager/spash_screen.dart';
+import 'package:finance_manager/auth/signup_screen.dart';
+import 'package:finance_manager/splash/spash_screen.dart';
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 

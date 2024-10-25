@@ -1,6 +1,6 @@
-import 'package:finance_manager/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:finance_manager/auth/signup_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -18,13 +18,10 @@ class _SplashScreenState extends State<SplashScreen>
   void initState() {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-
-
     _controller = AnimationController(
       duration: const Duration(seconds: 4),
       vsync: this,
     );
-
 
     _fadeAnimation = Tween<double>(begin: 0.0, end: 3.0).animate(
       CurvedAnimation(
@@ -38,7 +35,7 @@ class _SplashScreenState extends State<SplashScreen>
     Future.delayed(const Duration(seconds: 6), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-          builder: (_) => const HomeScreen(),
+          builder: (_) => const SignUpScreen(),
         ),
       );
     });
