@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:finance_manager/expense/expenses_screen.dart';
+import 'package:finance_manager/income/incomes_screen.dart';
+import 'package:finance_manager/navigationbar/app_drawer.dart';
 
-class HomeScreen extends StatelessWidget {
+
+class HomeScreen extends StatefulWidget {  // Changed to StatefulWidget
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();  // Add this line
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,  // Add this line
       backgroundColor: Colors.white,
+      drawer: const AppDrawer(),
       body: SafeArea(
         child: Column(
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -36,7 +48,7 @@ class HomeScreen extends StatelessWidget {
                       child: IconButton(
                         icon: const Icon(Icons.menu, color: Colors.white),
                         onPressed: () {
-                          // TODO:
+                          _scaffoldKey.currentState?.openDrawer();  // Updated this line
                         },
                       ),
                     ),
@@ -151,7 +163,12 @@ class HomeScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO:
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ExpensesScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1A2D52),
@@ -227,7 +244,12 @@ class HomeScreen extends StatelessWidget {
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () {
-                          // TODO:
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const IncomeScreen(),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF1A2D52),

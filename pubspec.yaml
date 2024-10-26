@@ -13,6 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.9
+  fl_chart: ^0.65.0
 
   cupertino_icons: ^1.0.8
 
@@ -28,5 +29,10 @@ flutter:
     - assets/logo.png
     - assets/expense_icon.png
     - assets/income_icon.png
+    - assets/investment_icon.png
+    - assets/savings_icon.png
+    - assets/home_icon.png
+    - assets/settings_icon.png
+
   uses-material-design: true
 
