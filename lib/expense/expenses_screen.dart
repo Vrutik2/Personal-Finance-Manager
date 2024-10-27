@@ -10,7 +10,6 @@ class ExpensesScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // App Bar with back button and title
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -39,7 +38,6 @@ class ExpensesScreen extends StatelessWidget {
             ),
             const Divider(height: 1),
 
-            // Total Amount Card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -77,34 +75,27 @@ class ExpensesScreen extends StatelessWidget {
               ),
             ),
 
-            // Add Entry Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
-                  // Add Value TextField
                   _buildTextField(
                     hintText: 'Add Value',
                     onAdd: () {
-                      // TODO: Implement add value
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  // Add Category TextField
                   _buildTextField(
                     hintText: 'Add Category',
                     onAdd: () {
-                      // TODO: Implement add category
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  // Add Date TextField
                   _buildTextField(
                     hintText: 'Add Date',
                     onAdd: () {
-                      // TODO: Implement add date
                     },
                   ),
                 ],
@@ -113,12 +104,10 @@ class ExpensesScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Expenses List
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
                 children: [
-                  // Today's Date
                   const Padding(
                     padding: EdgeInsets.symmetric(vertical: 8.0),
                     child: Text(
@@ -131,26 +120,22 @@ class ExpensesScreen extends StatelessWidget {
                     ),
                   ),
 
-                  // Expense Items
                   ExpenseItem(
                     category: 'Personal',
                     amount: 500,
                     onTap: () {
-                      // TODO: Handle item tap
                     },
                   ),
                   ExpenseItem(
                     category: 'Food',
                     amount: 45,
                     onTap: () {
-                      // TODO: Handle item tap
                     },
                   ),
                   ExpenseItem(
                     category: 'Others',
                     amount: 100,
                     onTap: () {
-                      // TODO: Handle item tap
                     },
                   ),
                 ],
@@ -175,16 +160,16 @@ class ExpensesScreen extends StatelessWidget {
             onPressed: onAdd,
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF1A2D52),
-              foregroundColor: Colors.white,  // Text color
+              foregroundColor: Colors.white,  
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 16),  // Added padding
+              padding: const EdgeInsets.symmetric(horizontal: 16),  
             ),
             child: const Text(
               'Add',
               style: TextStyle(
-                color: Colors.white,  // Explicit white color
+                color: Colors.white,  
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -207,7 +192,6 @@ class ExpensesScreen extends StatelessWidget {
   }
 }
 
-// Keep the ExpenseItem class unchanged
 class ExpenseItem extends StatelessWidget {
   final String category;
   final double amount;

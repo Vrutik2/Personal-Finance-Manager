@@ -10,7 +10,6 @@ class IncomeScreen extends StatelessWidget {
       body: SafeArea(
         child: Column(
           children: [
-            // App Bar with back button and title
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Row(
@@ -39,7 +38,6 @@ class IncomeScreen extends StatelessWidget {
             ),
             const Divider(height: 1),
 
-            // Current Month Amount Card
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -78,25 +76,20 @@ class IncomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Add Entry Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 children: [
-                  // Add Value TextField
                   _buildTextField(
                     hintText: 'Add Value',
                     onAdd: () {
-                      // TODO: Implement add value
                     },
                   ),
                   const SizedBox(height: 16),
 
-                  // Add Month TextField
                   _buildTextField(
                     hintText: 'Add Month',
                     onAdd: () {
-                      // TODO: Implement add month
                     },
                   ),
                 ],
@@ -105,7 +98,6 @@ class IncomeScreen extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            // Previous Months Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
@@ -122,7 +114,6 @@ class IncomeScreen extends StatelessWidget {
                   IconButton(
                     icon: const Icon(Icons.filter_list),
                     onPressed: () {
-                      // TODO: Implement filters
                     },
                     color: const Color(0xFF1A2D52),
                   ),
@@ -130,7 +121,6 @@ class IncomeScreen extends StatelessWidget {
               ),
             ),
 
-            // Income List
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -139,21 +129,18 @@ class IncomeScreen extends StatelessWidget {
                     month: 'August',
                     amount: 500,
                     onTap: () {
-                      // TODO: Handle item tap
                     },
                   ),
                   IncomeItem(
                     month: 'July',
                     amount: 45,
                     onTap: () {
-                      // TODO: Handle item tap
                     },
                   ),
                   IncomeItem(
                     month: 'June',
                     amount: 100,
                     onTap: () {
-                      // TODO: Handle item tap
                     },
                   ),
                 ],

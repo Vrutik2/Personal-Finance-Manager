@@ -4,7 +4,7 @@ import 'package:finance_manager/income/incomes_screen.dart';
 import 'package:finance_manager/navigationbar/app_drawer.dart';
 
 
-class HomeScreen extends StatefulWidget {  // Changed to StatefulWidget
+class HomeScreen extends StatefulWidget {  
   const HomeScreen({super.key});
 
   @override
@@ -12,12 +12,12 @@ class HomeScreen extends StatefulWidget {  // Changed to StatefulWidget
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();  // Add this line
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,  // Add this line
+      key: _scaffoldKey,  
       backgroundColor: Colors.white,
       drawer: const AppDrawer(),
       body: SafeArea(
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: IconButton(
                         icon: const Icon(Icons.menu, color: Colors.white),
                         onPressed: () {
-                          _scaffoldKey.currentState?.openDrawer();  // Updated this line
+                          _scaffoldKey.currentState?.openDrawer();  
                         },
                       ),
                     ),
@@ -64,7 +64,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Expenses Section
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -189,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                     const SizedBox(height: 40),
 
-                    // Income Section
+
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
