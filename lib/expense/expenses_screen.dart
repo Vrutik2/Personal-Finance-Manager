@@ -14,7 +14,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   final _categoryController = TextEditingController();
   final _dateController = TextEditingController();
   final _formatter = DateFormat('MMM dd, yyyy');
-  final _currencyFormatter = NumberFormat.currency(locale: 'en_US', symbol: '\$');
+  final _currencyFormatter =
+      NumberFormat.currency(locale: 'en_US', symbol: '\$');
   String? _editingId;
   bool _isLoading = false;
 
@@ -80,15 +81,15 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
   void _handleDelete(String id) async {
     setState(() => _isLoading = true);
-    
+
     // Simulate network delay
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     setState(() {
       _expenses.removeWhere((item) => item['id'] == id);
       _isLoading = false;
     });
-    
+
     _showMessage('Expense deleted successfully');
   }
 
@@ -152,7 +153,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         });
         _showMessage('Expense added successfully');
       }
-      
+
       // Clear inputs
       _valueController.clear();
       _categoryController.clear();
@@ -187,7 +188,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double totalExpenses = _expenses.fold(0, (sum, expense) => sum + expense['amount']);
+    double totalExpenses =
+        _expenses.fold(0, (sum, expense) => sum + expense['amount']);
 
     return Stack(
       children: [
@@ -285,23 +287,28 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              child: Text(_editingId != null ? 'Update' : 'Add'),
+                              child:
+                                  Text(_editingId != null ? 'Update' : 'Add'),
                             ),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
                         inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                          FilteringTextInputFormatter.allow(
+                              RegExp(r'^\d+\.?\d{0,2}')),
                           TextInputFormatter.withFunction((oldValue, newValue) {
                             try {
                               final number = double.parse(newValue.text);
-                              final formatted = _currencyFormatter.format(number);
+                              final formatted =
+                                  _currencyFormatter.format(number);
                               return TextEditingValue(
                                 text: formatted.substring(1),
-                                selection: TextSelection.collapsed(offset: formatted.length - 1),
+                                selection: TextSelection.collapsed(
+                                    offset: formatted.length - 1),
                               );
                             } catch (e) {
                               return newValue;
@@ -313,7 +320,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
 
                       // Category Dropdown
                       DropdownButtonFormField<String>(
-                        value: _categoryController.text.isEmpty ? null : _categoryController.text,
+                        value: _categoryController.text.isEmpty
+                            ? null
+                            : _categoryController.text,
                         decoration: InputDecoration(
                           hintText: 'Select Category',
                           border: OutlineInputBorder(
@@ -325,7 +334,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                             value: category['name'],
                             child: Row(
                               children: [
-                                Icon(category['icon'], size: 20, color: const Color(0xFF1A2D52)),
+                                Icon(category['icon'],
+                                    size: 20, color: const Color(0xFF1A2D52)),
                                 const SizedBox(width: 8),
                                 Text(category['name']),
                               ],
@@ -388,15 +398,18 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: const Text('Delete Expense'),
-                              content: const Text('Are you sure you want to delete this expense?'),
+                              content: const Text(
+                                  'Are you sure you want to delete this expense?'),
                               actions: [
                                 TextButton(
-                                  onPressed: () => Navigator.pop(context, false),
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
                                   child: const Text('Cancel'),
                                 ),
                                 TextButton(
                                   onPressed: () => Navigator.pop(context, true),
-                                  style: TextButton.styleFrom(foregroundColor: Colors.red),
+                                  style: TextButton.styleFrom(
+                                      foregroundColor: Colors.red),
                                   child: const Text('Delete'),
                                 ),
                               ],
@@ -417,19 +430,22 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(12),
-                              border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                              border: Border.all(
+                                  color: Colors.grey.withOpacity(0.2)),
                             ),
                             child: Row(
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(8),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1A2D52).withOpacity(0.1),
+                                    color: const Color(0xFF1A2D52)
+                                        .withOpacity(0.1),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Icon(
                                     _categories.firstWhere(
-                                      (cat) => cat['name'] == expense['category'],
+                                      (cat) =>
+                                          cat['name'] == expense['category'],
                                       orElse: () => _categories.last,
                                     )['icon'],
                                     color: const Color(0xFF1A2D52),
@@ -438,7 +454,8 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                                 const SizedBox(width: 12),
                                 Expanded(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         expense['category'],
@@ -458,7 +475,7 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
                                   ),
                                 ),
                                 Text(
-                                   _currencyFormatter.format(expense['amount']),
+                                  _currencyFormatter.format(expense['amount']),
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -490,5 +507,3 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
     );
   }
 }
-                                  
-
