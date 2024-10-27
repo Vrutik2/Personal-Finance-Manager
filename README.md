@@ -64,4 +64,6 @@ After installation, the app can be used to:
 - Manage investments and monitor their performance.
 - View reports to analyze spending and saving habits over time.
 
+## Presentation
+https://docs.google.com/presentation/d/1kmHMAOXHwUzG2-x2yKk0lqcSEdhDi5A7z-uKXCgMzH8/edit?usp=sharing
 
