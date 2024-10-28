@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -8,10 +9,161 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  // Keys for SharedPreferences
+  static const String notificationsKey = 'notifications_enabled';
+  static const String darkModeKey = 'dark_mode_enabled';
+  static const String currencyKey = 'selected_currency';
+  static const String languageKey = 'selected_language';
+
   bool _notificationsEnabled = true;
   bool _darkModeEnabled = false;
   String _selectedCurrency = 'USD';
   String _selectedLanguage = 'English';
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSettings();
+  }
+
+  // Load saved settings from SharedPreferences
+  Future<void> _loadSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _notificationsEnabled = prefs.getBool(notificationsKey) ?? true;
+      _darkModeEnabled = prefs.getBool(darkModeKey) ?? false;
+      _selectedCurrency = prefs.getString(currencyKey) ?? 'USD';
+      _selectedLanguage = prefs.getString(languageKey) ?? 'English';
+    });
+  }
+
+  // Save settings to SharedPreferences
+  Future<void> _saveSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool(notificationsKey, _notificationsEnabled);
+    await prefs.setBool(darkModeKey, _darkModeEnabled);
+    await prefs.setString(currencyKey, _selectedCurrency);
+    await prefs.setString(languageKey, _selectedLanguage);
+  }
+
+  // Handle notifications toggle
+  Future<void> _handleNotificationsChanged(bool value) async {
+    setState(() {
+      _notificationsEnabled = value;
+    });
+    await _saveSettings();
+    
+    if (value) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Notifications enabled')),
+      );
+    }
+  }
+
+  // Handle dark mode toggle
+  Future<void> _handleDarkModeChanged(bool value) async {
+    setState(() {
+      _darkModeEnabled = value;
+    });
+    await _saveSettings();
+  }
+
+  // Handle password change
+  Future<void> _handlePasswordChange() async {
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => _buildChangePasswordDialog(),
+    );
+
+    if (result ?? false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password updated successfully')),
+      );
+    }
+  }
+
+  // Handle logout
+  Future<void> _handleLogout() async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirm Logout'),
+        content: const Text('Are you sure you want to logout?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('Logout'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed ?? false) {
+      if (mounted) {
+        Navigator.of(context).pushReplacementNamed('/login');
+      }
+    }
+  }
+
+  Widget _buildChangePasswordDialog() {
+    final currentPasswordController = TextEditingController();
+    final newPasswordController = TextEditingController();
+    final confirmPasswordController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    return AlertDialog(
+      title: const Text('Change Password'),
+      content: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextFormField(
+              controller: currentPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Current Password'),
+              validator: (value) => value?.isEmpty ?? true ? 'Please enter current password' : null,
+            ),
+            TextFormField(
+              controller: newPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'New Password'),
+              validator: (value) {
+                if (value?.isEmpty ?? true) return 'Please enter new password';
+                if (value!.length < 8) return 'Password must be at least 8 characters';
+                return null;
+              },
+            ),
+            TextFormField(
+              controller: confirmPasswordController,
+              obscureText: true,
+              decoration: const InputDecoration(labelText: 'Confirm Password'),
+              validator: (value) => value != newPasswordController.text ? 'Passwords do not match' : null,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(context, false),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (formKey.currentState?.validate() ?? false) {
+              Navigator.pop(context, true);
+            }
+          },
+          child: const Text('Update'),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +177,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_ios,
-                      color: Color(0xFF1A2D52),
-                    ),
+                    icon: const Icon(Icons.arrow_back_ios, color: Color(0xFF1A2D52)),
                     onPressed: () => Navigator.pop(context),
                   ),
                   const Expanded(
@@ -48,7 +197,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const Divider(height: 1),
 
-
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.all(16),
@@ -59,11 +207,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: 'Notifications',
                     trailing: Switch(
                       value: _notificationsEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _notificationsEnabled = value;
-                        });
-                      },
+                      onChanged: _handleNotificationsChanged,
                       activeColor: const Color(0xFF1A2D52),
                     ),
                   ),
@@ -72,11 +216,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     title: 'Dark Mode',
                     trailing: Switch(
                       value: _darkModeEnabled,
-                      onChanged: (value) {
-                        setState(() {
-                          _darkModeEnabled = value;
-                        });
-                      },
+                      onChanged: _handleDarkModeChanged,
                       activeColor: const Color(0xFF1A2D52),
                     ),
                   ),
@@ -98,14 +238,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   _buildSettingsTile(
                     icon: Icons.lock,
                     title: 'Change Password',
-                    onTap: () {
-                    },
+                    onTap: _handlePasswordChange,
                   ),
                   const SizedBox(height: 24),
 
                   ElevatedButton(
-                    onPressed: () {
-                    },
+                    onPressed: _handleLogout,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
@@ -116,10 +254,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     child: const Text(
                       'Logout',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],
@@ -133,7 +268,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Widget _buildSectionHeader(String title) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 8.0),
+      padding: const EdgeInsets.only(bottom: 8),
       child: Text(
         title,
         style: const TextStyle(
@@ -148,41 +283,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
   Widget _buildSettingsTile({
     required IconData icon,
     required String title,
-    String? subtitle,
     Widget? trailing,
+    String? subtitle,
     VoidCallback? onTap,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.withOpacity(0.2)),
-      ),
-      child: ListTile(
-        leading: Icon(
-          icon,
-          color: const Color(0xFF1A2D52),
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(
-            fontSize: 16,
-            color: Color(0xFF1A2D52),
-          ),
-        ),
-        subtitle: subtitle != null
-            ? Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey,
-                ),
-              )
-            : null,
-        trailing: trailing,
-        onTap: onTap,
-      ),
+    return ListTile(
+      leading: Icon(icon, color: const Color(0xFF1A2D52)),
+      title: Text(title),
+      subtitle: subtitle != null ? Text(subtitle) : null,
+      trailing: trailing,
+      onTap: onTap,
     );
   }
 
@@ -200,37 +310,38 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               const Text(
                 'Select Currency',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A2D52),
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A2D52)),
               ),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 8,
-                children: ['USD', 'EUR', 'GBP', 'JPY', 'CNY']
-                    .map(
-                      (currency) => ChoiceChip(
-                        label: Text(currency),
-                        selected: _selectedCurrency == currency,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _selectedCurrency = currency;
-                            });
-                            Navigator.pop(context);
-                          }
-                        },
-                      ),
-                    )
-                    .toList(),
+              const Divider(),
+              ListTile(
+                title: const Text('USD'),
+                onTap: () => _selectCurrency('USD'),
+              ),
+              ListTile(
+                title: const Text('EUR'),
+                onTap: () => _selectCurrency('EUR'),
+              ),
+              ListTile(
+                title: const Text('JPY'),
+                onTap: () => _selectCurrency('JPY'),
+              ),
+              ListTile(
+                title: const Text('INR'),
+                onTap: () => _selectCurrency('INR'),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  void _selectCurrency(String currency) {
+    setState(() {
+      _selectedCurrency = currency;
+    });
+    _saveSettings();
+    Navigator.pop(context);
   }
 
   void _showLanguagePicker() {
@@ -247,36 +358,37 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               const Text(
                 'Select Language',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1A2D52),
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF1A2D52)),
               ),
-              const SizedBox(height: 16),
-              Wrap(
-                spacing: 8,
-                children: ['English', 'Spanish', 'French', 'German', 'Chinese']
-                    .map(
-                      (language) => ChoiceChip(
-                        label: Text(language),
-                        selected: _selectedLanguage == language,
-                        onSelected: (selected) {
-                          if (selected) {
-                            setState(() {
-                              _selectedLanguage = language;
-                            });
-                            Navigator.pop(context);
-                          }
-                        },
-                      ),
-                    )
-                    .toList(),
+              const Divider(),
+              ListTile(
+                title: const Text('English'),
+                onTap: () => _selectLanguage('English'),
+              ),
+              ListTile(
+                title: const Text('Spanish'),
+                onTap: () => _selectLanguage('Spanish'),
+              ),
+              ListTile(
+                title: const Text('French'),
+                onTap: () => _selectLanguage('French'),
+              ),
+              ListTile(
+                title: const Text('German'),
+                onTap: () => _selectLanguage('German'),
               ),
             ],
           ),
         );
       },
     );
+  }
+
+  void _selectLanguage(String language) {
+    setState(() {
+      _selectedLanguage = language;
+    });
+    _saveSettings();
+    Navigator.pop(context);
   }
 }
